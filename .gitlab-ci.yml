@@ -1,0 +1,66 @@
+stages:          # List of stages for jobs, and their order of execution
+  - build
+  - cloning_git
+  - deploy
+
+before_script:
+  - command -v ssh-agent >/dev/null || (apt-get update -y & apt-get install openssh-client -y)
+  - eval $(ssh-agent -s)
+  - echo "$PRE_DEPLOY" | tr -d '\r' | ssh-add - 
+  - mkdir -p ~/.ssh
+  - chmod 700 ~/.ssh
+  - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+  - ssh-keyscan -t rsa $PRE_DEPLOY_IP >> ~/.ssh/known_hosts
+
+build-job:       # This job runs in the build stage, which runs first.
+  stage: build
+  image: python:latest
+  before_script:
+    - command -v ssh-agent >/dev/null || (apt-get update -y & apt-get install openssh-client -y)
+    - eval $(ssh-agent -s)
+    - echo "$PRE_DEPLOY" | tr -d '\r' | ssh-add - 
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    - ssh-keyscan -t rsa $PRE_DEPLOY_IP >> ~/.ssh/known_hosts
+  script:
+    - ssh ubuntu@$PRE_DEPLOY_IP "echo  | sudo -s apt-get update -y"
+    # - echo "Gitlab is chutiya"
+    - ssh ubuntu@$PRE_DEPLOY_IP "command -v django-admin > /dev/null || echo  | sudo -s apt install python3-django"
+    - ssh ubuntu@$PRE_DEPLOY_IP "command -v pip3 > /dev/null || apt install python3-pip"
+    - ssh ubuntu@$PRE_DEPLOY_IP "command -v python3-venv > /dev/null || echo  | sudo -s apt install python3-venv"
+    - ssh ubuntu@$PRE_DEPLOY_IP "echo  | sudo -s apt install libmysqlclient-dev"
+    - ssh ubuntu@$PRE_DEPLOY_IP "pip install mysqlclient"
+    - ssh ubuntu@$PRE_DEPLOY_IP "[[ -d ~/SMT/ ]] > /dev/null || echo  | sudo -s python3 -m venv SMT"
+    - ssh ubuntu@$PRE_DEPLOY_IP "source ~/SMT/bin/activate"
+    - ssh ubuntu@$PRE_DEPLOY_IP "echo | sudo -s mysql -uroot < ~/dbcreate.sql"
+    - ssh ubuntu@$PRE_DEPLOY_IP "echo  | sudo -s mysqlshow"
+  tags:
+    - shell
+    - Linux
+    - docker
+    - python
+
+gitcloning:   # This job runs in the test stage.
+  stage: cloning_git    # It only starts when the job in the build stage completes successfully.
+  script:
+    - ssh ubuntu@$PRE_DEPLOY_IP "echo  | sudo -s apt-get update -y"
+
+lint-test-job:   # This job also runs in the test stage.
+  stage: cloning_git    # It can run at the same time as unit-test-job (in parallel).
+  script:
+    - echo "Linting code... This will take about 10 seconds."
+    # - sleep 10
+    - echo "No lint issues found."
+  # tags:
+  #   - Shell
+  #   - Linux
+
+deploy-job:      # This job runs in the deploy stage.
+  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+  script:
+    - echo "Deploying application..."
+    - echo "Application successfully deployed."
+  # tags:
+  #   - Shell
+  #   - Linux
