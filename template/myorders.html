@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.4.1/css/mdb.min.css"
+    />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <style>
+    .hm-gradient {
+      background: #dbe6f6;
+      background: -webkit-linear-gradient(to bottom, #009688, #dbe6f6);
+      background: linear-gradient(to bottom, #009688, #dbe6f6);
+    }
+    .darken-grey-text {
+      color: #009688;
+    }
+    .input-group.md-form.form-sm.form-2 input {
+      border: 1px solid #bdbdbd;
+      border-top-left-radius: 0.25rem;
+      border-bottom-left-radius: 0.25rem;
+    }
+    .input-group.md-form.form-sm.form-2 input.purple-border {
+      border: 1px solid #9e9e9e;
+    }
+    .input-group.md-form.form-sm.form-2
+      input[type="text"]:focus:not([readonly]).purple-border {
+      border: 1px solid #009688;
+      box-shadow: none;
+    }
+    .form-2 .input-group-addon {
+      border: 1px solid #009688;
+    }
+    .danger-text {
+      color: #009688;
+    }
+    .success-text {
+      color: #00c851;
+    }
+    .table-bordered.red-border,
+    .table-bordered.red-border th,
+    .table-bordered.red-border td {
+      border: 1px solid #009688 !important;
+    }
+    .table.table-bordered th {
+      text-align: center;
+    }
+  </style>
+  <body class="hm-gradient">
+    <main>
+      <!--MDB Tables-->
+      <div class="container mt-4">
+        <div class="text-center darken-grey-text mb-4">
+          <h1 class="font-bold mt-4 mb-3 h1" style="color: whitesmoke;"><b>My Orders ! </b></h1>
+          <br/>
+          <button class="btn profile-edit-btn" style="color: seashell; background-color: #009688; border-radius: 5px; border-color: whitesmoke; border:solid">
+            <a href="dashboard" style="color: whitesmoke;">New Order</a>
+          </button>
+          <button class="btn profile-edit-btn" style="color: seashell; background-color: #009688; border-radius: 5px; border-color: whitesmoke; border:solid">
+            <a href="logout" style="color: whitesmoke;">Logout</a>
+          </button>
+          <!-- <form action="dashboard" method="GET"><input class="btn btn-danger btn-md" value="New order" type="submit">
+          </input></form>
+          <form action="logout" method="GET"><input class="btn btn-danger btn-md" value="Log Out" type="submit">
+          </input></form> -->
+          
+
+        <div class="card mb-3" style="color: #009688;">
+          <div class="card-body" style="color: #009688;">
+            <!--Table-->
+            <table class="table table-hover" style="color: #009688;">
+              <!--Table head-->
+              <thead class="mdb-color darken-3" style="color: #009688;">
+                <tr class="text-white" style="color: #009688;">
+                  <th>Order Id</th>
+                  <th>Name</th>
+                  <th>Who it is ?</th>
+                  <th>Location</th>
+                  <th>Review</th>
+                  <!-- <th>Email ID</th> -->
+                  <!-- <th>Pickup Location</th> -->
+                  <!-- <th>Drop Location</th> -->
+                  <!-- <th>Extra Messages</th> -->
+                </tr>
+              </thead>
+              <!--Table head-->
+              <!--Table body-->
+              {% for orders in order %}
+            
+              <tbody>
+                <tr>
+                  
+                  <!-- <th scope="row">{{count}}</th> -->
+                  <td>{{orders.orderid}}</td>
+                  <td>{{orders.fullname}}</td>
+                  <td>{{orders.category}}</td>
+                  <td>{{orders.location}}</td>
+                  <td><a href="review/{{orders.service_provider}}">Review</button></td>
+
+                </tr>
+                
+                {%endfor%}
+              </tbody>
+              <!--Table body-->
+            </table>
+            <!--Table-->
+          </div>
+        </div>
+        <hr class="my-4" />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+
+        <br /><br />
+        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      </div>
+      <!--MDB Tables-->
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.4.1/js/mdb.min.js"></script>
+    <script src="./script.js"></script>
+  </body>
+</html>
